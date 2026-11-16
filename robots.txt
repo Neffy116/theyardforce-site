@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://theyardforce.com/sitemap.xml
