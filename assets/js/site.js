@@ -318,15 +318,20 @@
       btn.disabled = true; btn.textContent = 'Sending…';
       const payload = Object.fromEntries(new FormData(form).entries());
       payload.services = new FormData(form).getAll('services').join(', ');
-      payload.form = form.dataset.form; payload.tag = form.dataset.tag; payload.page = location.pathname;
+      payload.form = form.dataset.form; payload.tag = form.dataset.tag; payload.pipeline = form.dataset.pipeline || ''; payload.page = location.pathname;
+      payload.submittedAt = new Date().toISOString();
       const endpoint = form.dataset.endpoint;
       let ok = true;
       if (endpoint) {
         try {
           const res = await fetch(endpoint, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
           ok = res.ok;
-        } catch { ok = false; }
+        } catch {
+          // Webhook without CORS headers: send as a simple request (no preflight). The response can't be read, so count it as sent.
+          try { await fetch(endpoint, { method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'text/plain' }, body: JSON.stringify(payload) }); ok = true; } catch { ok = false; }
+        }
       }
+      if (ok && form.dataset.thanks) { location.href = form.dataset.thanks + '?form=' + encodeURIComponent(form.dataset.form); return; }
       if (ok) {
         const tpl = document.getElementById(form.dataset.success);
         form.innerHTML = tpl ? tpl.innerHTML : '<div class="form-success"><h3>Thank you.</h3><p>We received your request.</p></div>';
