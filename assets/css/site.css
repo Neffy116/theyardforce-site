@@ -768,3 +768,7 @@ main > section.hero-sec:first-child .h-osw { letter-spacing: 2px; opacity: .92; 
 .thanks-card { text-align: center; }
 .thanks-check { width: 72px; height: 72px; margin: 0 auto 18px; border-radius: 50%; background: var(--red); color: var(--white); display: grid; place-items: center; font-size: 38px; font-weight: 700; box-shadow: 0 10px 24px -10px rgba(210, 11, 43, .6); }
 .steps-light li { color: var(--navy); }
+
+/* Jump links land below the sticky header */
+[id]{scroll-margin-top:150px}
+@media (max-width:1024px){[id]{scroll-margin-top:90px}}
