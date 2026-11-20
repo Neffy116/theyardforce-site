@@ -331,6 +331,11 @@
           try { await fetch(endpoint, { method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'text/plain' }, body: JSON.stringify(payload) }); ok = true; } catch { ok = false; }
         }
       }
+      // One-use flag for tracking.js: generate_lead fires once on /thanks/ for real lead forms only
+      // (not feedback, Backyard Blessing nominations or event-sponsorship requests).
+      if (ok && form.dataset.thanks && !['feedback', 'blessing', 'sponsorship'].includes(form.dataset.form)) {
+        try { sessionStorage.setItem('rise_lead_pending_v1', String(Date.now())); } catch {}
+      }
       if (ok && form.dataset.thanks) { location.href = form.dataset.thanks + '?form=' + encodeURIComponent(form.dataset.form); return; }
       if (ok) {
         const tpl = document.getElementById(form.dataset.success);
